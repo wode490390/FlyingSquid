@@ -1,0 +1,10 @@
+spawn-every-x-seconds: 20
+
+levels:
+  # spawn limits
+  world:
+    flying-squids: 8
+    explosive-flying-squids: 16
+# exampleworld1:
+#   flying-squids: 8
+#   explosive-flying-squids: 16
