@@ -10,6 +10,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.math.MathHelper;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.scheduler.PluginTask;
 import cn.wode490390.nukkit.flyingsquid.FlyingSquidPlugin;
 import cn.wode490390.nukkit.flyingsquid.config.LevelConfig;
 import cn.wode490390.nukkit.flyingsquid.entity.FlyingSquidType;
@@ -37,6 +38,8 @@ public class FlyingSquidSpawner extends Thread {
         this.server = plugin.getServer();
         this.levelConfigs = levelConfigs;
         this.sleepTime = sleepTime;
+        this.setDaemon(true);
+        this.setName("entity-spawner");
     }
 
     @Override
@@ -136,12 +139,22 @@ public class FlyingSquidSpawner extends Thread {
                                                                         entity.yaw = this.rand.nextFloat() * 360;
                                                                         if (true || !entity.isCollided) { //TODO
                                                                             ++cluster;
-                                                                            entity.spawnToAll();
+                                                                            this.plugin.getServer().getScheduler().scheduleTask(this.plugin, new PluginTask<FlyingSquidPlugin>(this.plugin) {
+                                                                                @Override
+                                                                                public void onRun(int currentTick) {
+                                                                                    entity.spawnToAll();
+                                                                                }
+                                                                            });
                                                                             if (cluster >= 4) {
                                                                                 continue world;
                                                                             }
                                                                         } else {
-                                                                            entity.close();
+                                                                            this.plugin.getServer().getScheduler().scheduleTask(this.plugin, new PluginTask<FlyingSquidPlugin>(this.plugin) {
+                                                                                @Override
+                                                                                public void onRun(int currentTick) {
+                                                                                    entity.close();
+                                                                                }
+                                                                            });
                                                                         }
                                                                     }
                                                                 }
